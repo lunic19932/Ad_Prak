@@ -1,6 +1,6 @@
 /**
-*PM2 Paktikum
-*@autor Johannes Kruber
+*AD Paktikum
+*@autor Daniel Nisch
 *@autor Luis Nickel
 */
 package aufgabe7;

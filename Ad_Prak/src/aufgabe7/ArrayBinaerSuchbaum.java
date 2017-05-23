@@ -1,6 +1,6 @@
 /**
-*PM2 Paktikum
-*@autor Johannes Kruber
+*AD Paktikum
+*@autor Daniel Niscjh
 *@autor Luis Nickel
 */
 package aufgabe7;
@@ -117,6 +117,78 @@ public class ArrayBinaerSuchbaum<T extends Comparable<T>> implements BinSuchbaum
 		a.knotenEinfügen(1);
 		a.knotenEinfügen(4);
 		a.ausgabe(AusgabeAuswahl.HAUPT);
+	}
+	@Override
+	public int summe(int l, int r) {
+		int wurzel = 0;
+
+		// Finde einen Teilbaum, dessen Wurzelknoten zwischen l und r liegt
+		while (!(l <= (int) array[wurzel] && r >= (int) array[wurzel])) {
+			if (l > (int) array[wurzel]) {
+				wurzel = wurzel*2+2;
+				continue;
+			}
+
+			if (r < (int) array[wurzel]) {
+				wurzel = wurzel*2+1;
+				continue;
+			}
+
+		}
+
+		// Füge gesamte Kindersumme dem Ergebnis hinzu
+		int ergebnis = getSummeAllerKinder(wurzel);
+
+		int linkerSohn = wurzel;
+		while (linkerSohn < array.length && array[linkerSohn] != null) {
+			// Finde linke Knoten, die kleiner sind als die linke Grenze
+			// (deswegen gehören sie nicht in das Ergebnis)
+			if ((int) array[linkerSohn] >= l) {
+				linkerSohn = linkerSohn*2+1;
+			} else {
+				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
+				ergebnis = ergebnis - getSummeAllerKinder(linkerSohn);
+				linkerSohn = linkerSohn*2+2;
+				if (array[linkerSohn] == null) {
+					break;
+				}
+				// Addiere pauschal den rechten Sohn wieder auf. Erst
+				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
+				// Vorgang notwendig war
+				ergebnis = ergebnis + getSummeAllerKinder(linkerSohn);
+			}
+		}
+
+		int rechterSohn = wurzel;
+		while (rechterSohn < array.length && array[rechterSohn] != null) {
+			// Finde rechte Knoten, die größer sind als die rechte Grenze
+			if ((int) array[rechterSohn] <= r) {
+				rechterSohn = rechterSohn*2+2;
+			} else {
+				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
+				ergebnis = ergebnis - getSummeAllerKinder(rechterSohn);
+				rechterSohn = rechterSohn*2+1;
+				if (array[rechterSohn] == null) {
+					break;
+				}
+				// Addiere pauschal den rechten Sohn wieder auf. Erst
+				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
+				// Vorgang notwendig war
+				ergebnis = ergebnis + getSummeAllerKinder(rechterSohn);
+			}
+		}
+		return ergebnis;
+	}
+	
+	private int getSummeAllerKinder(int index) {
+		int summe = 0;
+		if (array.length > index*2+1 && array[index*2+1] != null) {
+			summe += getSummeAllerKinder(index*2+1);
+		}
+		if (array.length > index*2+2 && array[index*2+2] != null) {
+			summe += getSummeAllerKinder(index*2+2);
+		}
+		return summe + (int) array[index];
 	}
 	
 
