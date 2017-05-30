@@ -10,6 +10,7 @@ public class ArrayBinaerSuchbaum<T extends Comparable<T>> implements BinSuchbaum
 	 * Array zum Speichern des Binaeren Suchbaumes
 	 */
 	Comparable[] array=new Comparable[10];
+	private int counter;
 
 	
 	@Override
@@ -121,74 +122,46 @@ public class ArrayBinaerSuchbaum<T extends Comparable<T>> implements BinSuchbaum
 	@Override
 	public int summe(int l, int r) {
 		int wurzel = 0;
+		counter = 0;
 
 		// Finde einen Teilbaum, dessen Wurzelknoten zwischen l und r liegt
 		while (!(l <= (int) array[wurzel] && r >= (int) array[wurzel])) {
+			counter++;
 			if (l > (int) array[wurzel]) {
 				wurzel = wurzel*2+2;
+				if (wurzel >= array.length || array[wurzel] == null) return -1; 
 				continue;
 			}
 
 			if (r < (int) array[wurzel]) {
 				wurzel = wurzel*2+1;
+				if (wurzel >= array.length || array[wurzel] == null) return -1; 
 				continue;
 			}
 
 		}
 
 		// Füge gesamte Kindersumme dem Ergebnis hinzu
-		int ergebnis = getSummeAllerKinder(wurzel);
+		int ergebnis = getSummeAllerKinder(wurzel, l, r);
 
-		int linkerSohn = wurzel;
-		while (linkerSohn < array.length && array[linkerSohn] != null) {
-			// Finde linke Knoten, die kleiner sind als die linke Grenze
-			// (deswegen gehören sie nicht in das Ergebnis)
-			if ((int) array[linkerSohn] >= l) {
-				linkerSohn = linkerSohn*2+1;
-			} else {
-				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
-				ergebnis = ergebnis - getSummeAllerKinder(linkerSohn);
-				linkerSohn = linkerSohn*2+2;
-				if (array[linkerSohn] == null) {
-					break;
-				}
-				// Addiere pauschal den rechten Sohn wieder auf. Erst
-				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
-				// Vorgang notwendig war
-				ergebnis = ergebnis + getSummeAllerKinder(linkerSohn);
-			}
-		}
-
-		int rechterSohn = wurzel;
-		while (rechterSohn < array.length && array[rechterSohn] != null) {
-			// Finde rechte Knoten, die größer sind als die rechte Grenze
-			if ((int) array[rechterSohn] <= r) {
-				rechterSohn = rechterSohn*2+2;
-			} else {
-				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
-				ergebnis = ergebnis - getSummeAllerKinder(rechterSohn);
-				rechterSohn = rechterSohn*2+1;
-				if (array[rechterSohn] == null) {
-					break;
-				}
-				// Addiere pauschal den rechten Sohn wieder auf. Erst
-				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
-				// Vorgang notwendig war
-				ergebnis = ergebnis + getSummeAllerKinder(rechterSohn);
-			}
-		}
+		System.out.println("Array counter: " + counter);
 		return ergebnis;
 	}
 	
-	private int getSummeAllerKinder(int index) {
+	private int getSummeAllerKinder(int index, int l, int r) {
+		counter++;
 		int summe = 0;
-		if (array.length > index*2+1 && array[index*2+1] != null) {
-			summe += getSummeAllerKinder(index*2+1);
+		int wert = (int) array[index];
+		if (array.length > index*2+1 &&  wert >= l && array[index*2+1] != null) {
+			summe += getSummeAllerKinder(index*2+1, l, r);
 		}
-		if (array.length > index*2+2 && array[index*2+2] != null) {
-			summe += getSummeAllerKinder(index*2+2);
+		if (array.length > index*2+2 && wert <= r && array[index*2+2] != null) {
+			summe += getSummeAllerKinder(index*2+2, l, r);
 		}
-		return summe + (int) array[index];
+		if (wert > r || wert < l) {
+			wert = 0;
+		}
+		return summe + wert;
 	}
 	
 

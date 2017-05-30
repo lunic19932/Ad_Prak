@@ -11,6 +11,7 @@ public class LinkedBinaersuchbaum<T extends Comparable<T>> implements
 	 * Beginn des binaeren Suchbaumes
 	 */
 	Element<T> anfangsKnoten;
+	private int counter;
 
 	@Override
 	public void knotenEinfügen(T wert) {
@@ -128,74 +129,46 @@ public class LinkedBinaersuchbaum<T extends Comparable<T>> implements
 	@Override
 	public int summe(int l, int r) {
 		Element<T> wurzel = anfangsKnoten;
+		counter = 0;
 
 		// Finde einen Teilbaum, dessen Wurzelknoten zwischen l und r liegt
 		while (!(l <= (int) wurzel.getWert() && r >= (int) wurzel.getWert())) {
+			counter++;
 			if (l > (int) wurzel.getWert()) {
 				wurzel = wurzel.getRechtenKindKnoten();
+				if (wurzel == null) return -1; 
 				continue;
 			}
 
 			if (r < (int) wurzel.getWert()) {
 				wurzel = wurzel.getLinkenKindKnoten();
+				if (wurzel == null) return -1; 
 				continue;
 			}
 
 		}
 
-		// Füge gesamte Kindersumme dem Ergebnis hinzu
-		int ergebnis = getSummeAllerKinder(wurzel);
+		// Füge Kindersumme dem Ergebnis hinzu abzüglich der Knoten ausserhalb des Bereichs.
+		int ergebnis = getSummeAllerKinder(wurzel, l, r);
 
-		Element<T> linkerSohn = wurzel;
-		while (linkerSohn != null) {
-			// Finde linke Knoten, die kleiner sind als die linke Grenze
-			// (deswegen gehören sie nicht in das Ergebnis)
-			if ((int) linkerSohn.getWert() >= l) {
-				linkerSohn = linkerSohn.getLinkenKindKnoten();
-			} else {
-				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
-				ergebnis = ergebnis - getSummeAllerKinder(linkerSohn);
-				linkerSohn = linkerSohn.getRechtenKindKnoten();
-				if (linkerSohn == null) {
-					break;
-				}
-				// Addiere pauschal den rechten Sohn wieder auf. Erst
-				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
-				// Vorgang notwendig war
-				ergebnis = ergebnis + getSummeAllerKinder(linkerSohn);
-			}
-		}
-
-		Element<T> rechterSohn = wurzel;
-		while (rechterSohn != null) {
-			// Finde rechte Knoten, die größer sind als die rechte Grenze
-			if ((int) rechterSohn.getWert() <= r) {
-				rechterSohn = rechterSohn.getRechtenKindKnoten();
-			} else {
-				// Subtrahiere diese potenziell ungültigen Werte vom Ergebnis
-				ergebnis = ergebnis - getSummeAllerKinder(rechterSohn);
-				rechterSohn = rechterSohn.getLinkenKindKnoten();
-				if (rechterSohn == null) {
-					break;
-				}
-				// Addiere pauschal den rechten Sohn wieder auf. Erst
-				// beim nächsten Schleifendurchlauf wird geprüft ob dieser
-				// Vorgang notwendig war
-				ergebnis = ergebnis + getSummeAllerKinder(rechterSohn);
-			}
-		}
+		System.out.println("heap counter: " + counter);
 		return ergebnis;
 	}
 	
-	private int getSummeAllerKinder(Element<T> knoten) {
+	private int getSummeAllerKinder(Element<T> knoten, int l, int r) {
+		counter++;
 		int summe = 0;
-		if (knoten.getLinkenKindKnoten() != null) {
-			summe += getSummeAllerKinder(knoten.getLinkenKindKnoten());
+		int wert = (int) knoten.getWert();
+		if (knoten.getLinkenKindKnoten() != null && wert >= l) {
+			summe += getSummeAllerKinder(knoten.getLinkenKindKnoten(), l, r);
 		}
-		if (knoten.getRechtenKindKnoten() != null) {
-			summe += getSummeAllerKinder(knoten.getRechtenKindKnoten());
+		if (knoten.getRechtenKindKnoten() != null && wert <= r) {
+			summe += getSummeAllerKinder(knoten.getRechtenKindKnoten(), l, r);
 		}
-		return summe + (int) knoten.getWert();
+		if (wert > r || wert < l) {
+			wert = 0;
+		}
+		return summe + wert;
 	}
 
 }
