@@ -1,5 +1,5 @@
 /**
-*PM2 Paktikum
+*AD Paktikum
 *@autor Johannes Kruber
 *@autor Luis Nickel
 */
@@ -17,4 +17,11 @@ public interface BinSuchbaum <T extends Comparable<T>>{
 	 * @param auswahl: in welcher Reihenfolge der Suchbaum ausgegeben wird(AusgabeAuswahl.SYMMETRISCH,AusgabeAuswahl.HAUPT,AusgabeAuswahl.NEBEN)
 	 */
 	void ausgabe(AusgabeAuswahl auswahl);
+	/**
+	 * Gibt die Summe aller Werte der Knoten in den Grenzen aus.
+	 * @param l untere Grenze
+	 * @param r obere Grenze
+	 * @return summe
+	 */
+	int summe(int l, int r);
 }

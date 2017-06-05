@@ -1,6 +1,6 @@
 /**
-*PM2 Paktikum
-*@autor Johannes Kruber
+*AD Paktikum
+*@autor Daniel Niscjh
 *@autor Luis Nickel
 */
 package aufgabe7;
@@ -10,6 +10,7 @@ public class ArrayBinaerSuchbaum<T extends Comparable<T>> implements BinSuchbaum
 	 * Array zum Speichern des Binaeren Suchbaumes
 	 */
 	Comparable[] array=new Comparable[10];
+	private int counter;
 
 	
 	@Override
@@ -117,6 +118,50 @@ public class ArrayBinaerSuchbaum<T extends Comparable<T>> implements BinSuchbaum
 		a.knotenEinfügen(1);
 		a.knotenEinfügen(4);
 		a.ausgabe(AusgabeAuswahl.HAUPT);
+	}
+	@Override
+	public int summe(int l, int r) {
+		int wurzel = 0;
+		counter = 0;
+
+		// Finde einen Teilbaum, dessen Wurzelknoten zwischen l und r liegt
+		while (!(l <= (int) array[wurzel] && r >= (int) array[wurzel])) {
+			counter++;
+			if (l > (int) array[wurzel]) {
+				wurzel = wurzel*2+2;
+				if (wurzel >= array.length || array[wurzel] == null) return -1; 
+				continue;
+			}
+
+			if (r < (int) array[wurzel]) {
+				wurzel = wurzel*2+1;
+				if (wurzel >= array.length || array[wurzel] == null) return -1; 
+				continue;
+			}
+
+		}
+
+		// Füge gesamte Kindersumme dem Ergebnis hinzu
+		int ergebnis = getSummeAllerKinder(wurzel, l, r);
+
+		System.out.println("Array counter: " + counter);
+		return ergebnis;
+	}
+	
+	private int getSummeAllerKinder(int index, int l, int r) {
+		counter++;
+		int summe = 0;
+		int wert = (int) array[index];
+		if (array.length > index*2+1 &&  wert >= l && array[index*2+1] != null) {
+			summe += getSummeAllerKinder(index*2+1, l, r);
+		}
+		if (array.length > index*2+2 && wert <= r && array[index*2+2] != null) {
+			summe += getSummeAllerKinder(index*2+2, l, r);
+		}
+		if (wert > r || wert < l) {
+			wert = 0;
+		}
+		return summe + wert;
 	}
 	
 
