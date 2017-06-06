@@ -3,6 +3,7 @@ package Graph;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -28,7 +29,9 @@ public class GraphMatrixImpl extends AGraph {
 	}
 
 	@Override
-	public int addNode(int[] edges, int[] weights) {
+	public int addNode(Node node) {
+		int[]edges=((MatrixNode)node).getEdges();
+		int[]weights=((MatrixNode)node).getWeights();
 		if (edges.length != weights.length || edges.length > size) {
 			throw new IllegalArgumentException("Invalid Array Lengths");
 		}
@@ -51,33 +54,37 @@ public class GraphMatrixImpl extends AGraph {
 	}
 
 	@Override
-	public void removeNode(int node) {
+	public void removeNode(Node node) {
+		int index=((MatrixNode)node).getIndex();
 		if (weightMatrix.length + weightMatrix.length * 0.1 + 1 < size) {
 			resizeMatrix((int) (weightMatrix.length - weightMatrix.length * 0.1 - 1));
 		}
 		for (int i = 0; i < weightMatrix.length; i++) {
-			weightMatrix[node][i] = NO_EDGE;
-			weightMatrix[i][node] = NO_EDGE;
+			weightMatrix[index][i] = NO_EDGE;
+			weightMatrix[i][index] = NO_EDGE;
 		}
-		if (node < size -1) {
-			freeIndices.add(node);
+		if (index < size -1) {
+			freeIndices.add(index);
 		}
 		size--;
 	}
 
 	@Override
-	public int[] getNeighbors(int node) {
-		List<Integer> neighbors = new ArrayList<Integer>();
+	public LinkedList getNeighbors(Node node) {
+		int index=((MatrixNode)node).getIndex();
+		LinkedList<Integer> neighbors = new LinkedList<Integer>();
 		for (int i = 0; i < size; i++) {
-			if (weightMatrix[node][i] != NO_EDGE && i != node) {
+			if (weightMatrix[index][i] != NO_EDGE && i != index) {
 				neighbors.add(i);
 			}
 		}
-		return neighbors.stream().mapToInt(i->i).toArray();
+		return neighbors;//.stream().mapToInt(i->i).toArray();
 	}
 
 	@Override
-	public int getWeight(int start, int end) {
+	public int getWeight(Node startNode, Node endNode) {
+		int start=((MatrixNode)startNode).getIndex();
+		int end=((MatrixNode)endNode).getIndex();
 		if (start >= weightMatrix.length || end >= weightMatrix.length) {
 			throw new IllegalArgumentException("Index out of Bounds");
 		}

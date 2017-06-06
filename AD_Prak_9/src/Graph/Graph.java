@@ -13,5 +13,7 @@ public interface Graph {
 	int getWeight(Node start, Node end);
 	
 	DykstraData[] getPaths(Node node);
+
+	void setWeight(Node addedNode1, Node addedNode2, int i);
 	
 }

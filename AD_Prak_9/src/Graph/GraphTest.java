@@ -10,12 +10,24 @@ import org.junit.Test;
 public class GraphTest {
 	
 	Graph graph;
-	GraphListeImpl graphListe;
+	Node addedNode1;
+	Node addedNode2;
+	ListNode reality;
+	
+	
 
 	@Before
 	public void init() {
-		graph = new GraphMatrixImpl(2);
-		graphListe = new GraphListeImpl();
+		graph = new GraphListeImpl();
+		
+		if(graph instanceof GraphMatrixImpl ){
+			
+		}else{
+			addedNode1=new ListNode();
+			 addedNode2=new ListNode();
+			 reality=new ListNode();
+		
+		}
 	}
 	
 	@Test
@@ -50,25 +62,23 @@ public class GraphTest {
 	}
 	@Test
 	public void testBasicFunctionsListe() {
-		ListNode addedNode1=new ListNode();
-		ListNode addedNode2=new ListNode();
-		ListNode reality;
-		graphListe.addNode(addedNode1);
-		assertEquals(graphListe.getWeight(addedNode1,addedNode1), 0);
 		
-		graphListe.addNode(addedNode2);
-		graphListe.setWeight(addedNode1, addedNode2, 2);
-		assertEquals(graphListe.getWeight(addedNode2, addedNode1),2);
+		graph.addNode(addedNode1);
+		assertEquals(graph.getWeight(addedNode1,addedNode1), 0);
 		
-		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getFirst());
+		graph.addNode(addedNode2);
+		graph.setWeight(addedNode1, addedNode2, 2);
+		assertEquals(graph.getWeight(addedNode2, addedNode1),2);
+		
+		reality=((ListNode)(graph.getNeighbors(addedNode1)).getFirst());
 		assertEquals(reality,addedNode1);
-		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getLast());
+		reality=((ListNode)(graph.getNeighbors(addedNode1)).getLast());
 		assertEquals(reality,addedNode2);
 		
-		graphListe.removeNode(addedNode2);
-		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getFirst());
+		graph.removeNode(addedNode2);
+		reality=((ListNode)(graph.getNeighbors(addedNode1)).getFirst());
 		assertEquals(reality,addedNode1);
-		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getLast());
+		reality=((ListNode)(graph.getNeighbors(addedNode1)).getLast());
 		assertEquals(reality,addedNode1);
 		
 		
