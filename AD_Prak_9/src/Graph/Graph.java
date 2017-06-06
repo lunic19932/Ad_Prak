@@ -1,15 +1,17 @@
 package Graph;
 
+import java.util.LinkedList;
+
 public interface Graph {
 
-	int addNode(int[] edges, int[] weights);
+	int addNode(NodeListe node);
 	
-	void removeNode(int node);
+	void removeNode(NodeListe node);
 	
-	int[] getNeighbors(int node);
+	LinkedList getNeighbors(NodeListe node);
 	
-	int getWeight(int start, int end);
+	int getWeight(NodeListe start, NodeListe end);
 	
-	DykstraData[] getPaths(int node);
+	DykstraData[] getPaths(NodeListe node);
 	
 }
