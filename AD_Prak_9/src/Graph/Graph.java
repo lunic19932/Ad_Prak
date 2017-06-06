@@ -4,14 +4,14 @@ import java.util.LinkedList;
 
 public interface Graph {
 
-	int addNode(NodeListe node);
+	int addNode(Node node);
 	
-	void removeNode(NodeListe node);
+	void removeNode(Node node);
 	
-	LinkedList getNeighbors(NodeListe node);
+	LinkedList getNeighbors(Node node);
 	
-	int getWeight(NodeListe start, NodeListe end);
+	int getWeight(Node start, Node end);
 	
-	DykstraData[] getPaths(NodeListe node);
+	DykstraData[] getPaths(Node node);
 	
 }

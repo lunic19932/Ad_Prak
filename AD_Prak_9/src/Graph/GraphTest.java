@@ -50,9 +50,9 @@ public class GraphTest {
 	}
 	@Test
 	public void testBasicFunctionsListe() {
-		NodeListe addedNode1=new NodeListe();
-		NodeListe addedNode2=new NodeListe();
-		NodeListe realty;
+		ListNode addedNode1=new ListNode();
+		ListNode addedNode2=new ListNode();
+		ListNode reality;
 		graphListe.addNode(addedNode1);
 		assertEquals(graphListe.getWeight(addedNode1,addedNode1), 0);
 		
@@ -60,16 +60,16 @@ public class GraphTest {
 		graphListe.setWeight(addedNode1, addedNode2, 2);
 		assertEquals(graphListe.getWeight(addedNode2, addedNode1),2);
 		
-		realty=graphListe.getNeighbors(addedNode1).getFirst();
-		assertEquals(realty,addedNode1);
-		realty=graphListe.getNeighbors(addedNode1).getLast();
-		assertEquals(realty,addedNode2);
+		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getFirst());
+		assertEquals(reality,addedNode1);
+		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getLast());
+		assertEquals(reality,addedNode2);
 		
 		graphListe.removeNode(addedNode2);
-		realty=graphListe.getNeighbors(addedNode1).getFirst();
-		assertEquals(realty,addedNode1);
-		realty=graphListe.getNeighbors(addedNode1).getLast();
-		assertEquals(realty,addedNode1);
+		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getFirst());
+		assertEquals(reality,addedNode1);
+		reality=((ListNode)(graphListe.getNeighbors(addedNode1)).getLast());
+		assertEquals(reality,addedNode1);
 		
 		
 		
@@ -87,20 +87,20 @@ public class GraphTest {
 		int[] edges;
 		int[] weights;
 		
-		graph.addNode(new NodeMatrix(new int[0], new int[0]));
+		graph.addNode(new int[0], new int[0]);
 		edges = new int[1]; edges[0] = 0;
 		weights = new int[1]; weights[0] = 2;
-		graph.addNode(new NodeMatrix(edges, weights));
+		graph.addNode(edges, weights);
 		edges = new int[2]; edges[0] = 0; edges[1] = 1;
 		weights = new int[2]; weights[0] = 5; weights[1] = 2;
-		graph.addNode(new NodeMatrix(edges, weights));
+		graph.addNode(edges, weights);
 		
 		int alternateSize = 30;
 		if (size < 30) {
 			alternateSize = size;
 		}
 		for (int i = 3; i < alternateSize; i++) {
-			graph.addNode(new NodeMatrix(edges, weights));
+			graph.addNode(edges, weights);
 		}
 		
 		for (int i = 30; i < size; i++) {

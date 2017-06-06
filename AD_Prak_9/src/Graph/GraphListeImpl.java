@@ -6,23 +6,23 @@ import java.util.List;
 
 public class GraphListeImpl extends AGraph {
 	
-	List<NodeListe> knoten;
+	List<ListNode> knoten;
 	public GraphListeImpl() {
-		knoten=new LinkedList<NodeListe>();
+		knoten=new LinkedList<ListNode>();
 		
 	
 	}
 	
-
-	public int addNode(NodeListe newNode) {
-		knoten.add(newNode);
+	@Override
+	public int addNode(Node newNode) {
+		knoten.add((ListNode)newNode);
 		return 0;
 	}
 
-	
-	public void removeNode(NodeListe newNode) {
-		LinkedList<NodeListe> nachbarn=newNode.getNeighbors();
-		Iterator<NodeListe> it=nachbarn.iterator();
+	@Override
+	public void removeNode(Node newNode) {
+		LinkedList<Node> nachbarn=((ListNode)newNode).getNeighbors();
+		Iterator<Node> it=nachbarn.iterator();
 		while(it.hasNext()){
 			it.next().deleteNachbarKnoten(newNode);
 		}
@@ -30,18 +30,18 @@ public class GraphListeImpl extends AGraph {
 		
 	}
 
-	
-	public LinkedList<NodeListe> getNeighbors(NodeListe node) {
+	@Override
+	public LinkedList<Node> getNeighbors(Node node) {
 	
 		return node.getNeighbors();
 	}
-	public void setWeight(NodeListe start, NodeListe end, int weight){
+	public void setWeight(Node start, Node end, int weight){
 		start.addNachbarKnoten(end, weight);
 		end.addNachbarKnoten(start, weight);
 		
 	}
-
-	public int getWeight(NodeListe start, NodeListe end) {
+	@Override
+	public int getWeight(Node start, Node end) {
 		
 		return start.getWeight(end);
 	}

@@ -4,7 +4,7 @@ public abstract class AGraph implements Graph {
 	
 	int size;
 	
-	public DykstraData[] getPaths(NodeListe node) {
+	public DykstraData[] getPaths(Node node) {
 		DykstraData[] data = new DykstraData[size];
 		//TODO implementation
 		return data;
