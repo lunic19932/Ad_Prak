@@ -1,90 +1,97 @@
 package Graph;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 
 public class GraphMatrixImpl extends AGraph {
 	
 	private final int NO_EDGE = -1;
 	
 	private int[][] weightMatrix;
-	private Queue<Integer> freeIndices;
+	
 	
 	public GraphMatrixImpl(int size) {
+		nodes=new ArrayList<Node>(size);
+		
 		weightMatrix = new int[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				weightMatrix[i][j] = NO_EDGE;
 			}
 		}
-		freeIndices = new LinkedBlockingQueue<Integer>();
+
 	}
 	
 	public GraphMatrixImpl() {
 		this(10);
 	}
+	public GraphMatrixImpl(int[][] weightMatrix, int size){
+		nodes=new ArrayList<Node>(size);
+		this.weightMatrix=weightMatrix;
+		for(int i=0;i<size;i++){
+			nodes.add(new Node());
+		}
+	}
 
 	@Override
-	public int addNode(Node node) {
-		int[]edges=((MatrixNode)node).getEdges();
-		int[]weights=((MatrixNode)node).getWeights();
-		if (edges.length != weights.length || edges.length > size) {
-			throw new IllegalArgumentException("Invalid Array Lengths");
+	public void addNode(Node node) {
+		Zaehler.count();
+		if (nodes.size() >= weightMatrix.length && !nodes.contains(null))
+		{
+			System.out.println("Graph ist voll");
+			// throw new Exception("Graph ist voll");
+			return;
 		}
-		if (weights.length == size) {
-			resizeMatrix((int) (weights.length + weights.length * 0.1 + 1));
+
+		if (nodes.contains(null))
+		{
+			nodes.set(nodes.indexOf(null), node);
 		}
-		int index = size;
-		if (!freeIndices.isEmpty()) {
-			index = freeIndices.poll();
-		} 
-		weightMatrix[index][index] = 0;
-		for (int i = 0; i < edges.length; i++) {
-			if (i != index) {
-				weightMatrix[index][i] = weights[i];
-				weightMatrix[i][index] = weights[i];
-			}
+		else
+		{
+			nodes.add(node);
 		}
-		size++;
-		return index;
+		weightMatrix[nodes.indexOf(node)][nodes.indexOf(node)]=0;
 	}
 
 	@Override
 	public void removeNode(Node node) {
-		int index=((MatrixNode)node).getIndex();
-		if (weightMatrix.length + weightMatrix.length * 0.1 + 1 < size) {
+		int index=nodes.indexOf(node);
+		if (weightMatrix.length + weightMatrix.length * 0.1 + 1 < nodes.size()) {
 			resizeMatrix((int) (weightMatrix.length - weightMatrix.length * 0.1 - 1));
 		}
 		for (int i = 0; i < weightMatrix.length; i++) {
+			Zaehler.count();
 			weightMatrix[index][i] = NO_EDGE;
 			weightMatrix[i][index] = NO_EDGE;
 		}
-		if (index < size -1) {
-			freeIndices.add(index);
-		}
-		size--;
+
+		nodes.set(nodes.indexOf(node), null);
+
 	}
 
 	@Override
-	public LinkedList getNeighbors(Node node) {
-		int index=((MatrixNode)node).getIndex();
-		LinkedList<Integer> neighbors = new LinkedList<Integer>();
-		for (int i = 0; i < size; i++) {
+	public LinkedList<Node> getNeighbors(Node node) {
+		int index=nodes.indexOf(node);
+		LinkedList<Node> neighbors = new LinkedList<Node>();
+		neighbors.add(node);
+		for (int i = 0; i < nodes.size(); i++) {
+			Zaehler.count();
 			if (weightMatrix[index][i] != NO_EDGE && i != index) {
-				neighbors.add(i);
+				neighbors.add(nodes.get(i));
 			}
 		}
 		return neighbors;//.stream().mapToInt(i->i).toArray();
 	}
 
 	@Override
-	public int getWeight(Node startNode, Node endNode) {
-		int start=((MatrixNode)startNode).getIndex();
-		int end=((MatrixNode)endNode).getIndex();
+	public int getWeight(Node nodeA, Node nodeB) {
+		Zaehler.count();
+		int start=nodes.indexOf(nodeA);
+		int end=nodes.indexOf(nodeB);
 		if (start >= weightMatrix.length || end >= weightMatrix.length) {
 			throw new IllegalArgumentException("Index out of Bounds");
 		}
@@ -94,7 +101,9 @@ public class GraphMatrixImpl extends AGraph {
 	private void resizeMatrix(int size) {
 		int[][] resizedMatrix = new int[size][];
 		for (int i = 0; i < size; i++) {
+			Zaehler.count();
 			if (i < weightMatrix.length) {
+				
 				resizedMatrix[i] = Arrays.copyOf(weightMatrix[i], size);
 			} else {
 				resizedMatrix[i] = new int[size];
@@ -102,6 +111,30 @@ public class GraphMatrixImpl extends AGraph {
 			}
 		}
 		weightMatrix = resizedMatrix;
+	}
+	@Override
+	public Node getIndexOf(int index){
+		Zaehler.count();
+		return nodes.get(index);
+	}
+	@Override
+	public void setWeight(Node nodeA, Node nodeB, int weight) {
+		Zaehler.count();
+		int indexA=nodes.indexOf(nodeA);
+		int indexB=nodes.indexOf(nodeB);
+		
+		weightMatrix[indexA][indexB] = weight;
+		weightMatrix[indexB][indexA] = weight;
+		
+	}
+
+	@Override
+	public boolean areNeighbors(Node nodeA, Node nodeB) {
+		Zaehler.count();
+		if(getWeight(nodeA, nodeB)==-1){
+			return false;
+		}
+		return true;
 	}
 
 }

@@ -2,15 +2,15 @@ package Graph;
 
 public class Edges {
 
-	private ListNode nachbarKnoten;
+	private Node nachbarKnoten;
 	private int weight;
 	
-	public Edges(ListNode nachbarKnoten,int weight){
+	public Edges(Node nachbarKnoten,int weight){
 		this.nachbarKnoten=nachbarKnoten;
 		this.weight=weight;
 	}
 	
-	public ListNode getNachbarKnoten(){
+	public Node getNachbarKnoten(){
 		return nachbarKnoten;
 	}
 	

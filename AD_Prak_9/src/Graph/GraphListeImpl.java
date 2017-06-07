@@ -1,32 +1,45 @@
 package Graph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+
 
 public class GraphListeImpl extends AGraph {
 	
-	List<ListNode> knoten;
-	public GraphListeImpl() {
-		knoten=new LinkedList<ListNode>();
+
+	public GraphListeImpl(int size) {
+		nodes=new ArrayList<Node>(size);
 		
-	
 	}
-	
+	public GraphListeImpl() {
+		this(10);
+		
+	}
 	@Override
-	public int addNode(Node newNode) {
-		knoten.add((ListNode)newNode);
-		return 0;
+	public void addNode(Node newNode) {
+		Zaehler.count();
+
+		if (nodes.contains(null))
+		{
+			nodes.set(nodes.indexOf(null), newNode);
+		}
+		else
+		{
+			nodes.add(newNode);
+		}
+		
 	}
 
 	@Override
 	public void removeNode(Node newNode) {
-		LinkedList<Node> nachbarn=((ListNode)newNode).getNeighbors();
+		Zaehler.count();
+		LinkedList<Node> nachbarn=(newNode).getNeighbors();
 		Iterator<Node> it=nachbarn.iterator();
 		while(it.hasNext()){
 			it.next().deleteNachbarKnoten(newNode);
 		}
-		knoten.remove(newNode);
+		nodes.remove(newNode);
 		
 	}
 
@@ -42,8 +55,33 @@ public class GraphListeImpl extends AGraph {
 	}
 	@Override
 	public int getWeight(Node start, Node end) {
-		
+		Zaehler.count();
 		return start.getWeight(end);
+	}
+
+	@Override
+	public Node getIndexOf(int index){
+		Zaehler.count();
+		return nodes.get(index);
+	}
+	@Override
+	public boolean areNeighbors(Node nodeA, Node nodeB) {
+		Zaehler.count();
+		if(getWeight(nodeA, nodeB)==-1){
+			return false;
+		}
+		return true;
+	}
+	
+	public int[][] toArray(){
+		int[][] weightMatrix = new int[nodes.size()][nodes.size()];
+			for(int i=0;i<nodes.size();i++){
+				for(int j=0;j<nodes.size();j++){
+					weightMatrix[i][j]=getWeight(nodes.get(i), nodes.get(j));
+					
+				}
+			}
+		return weightMatrix;
 	}
 
 
