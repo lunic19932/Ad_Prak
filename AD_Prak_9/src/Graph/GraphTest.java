@@ -106,16 +106,17 @@ public class GraphTest {
 		for(int i=1;i<=k;i++){
 			size=(int)Math.pow(10, i);
 			graph=new GraphListeImpl(size);
-			anzNachbarn=size/100;
+			anzNachbarn=3;
 			fillGraph(size, anzNachbarn);
 			Zaehler.reset();
 			graph.getPaths(graph.getIndexOf((int)(Math.random()*size)));
-			System.out.println("Liste  n="+size+" Aufwand:"+Zaehler.getOpCount());
+			System.out.println("n="+size);
+			System.out.println("Liste  Aufwand:"+Zaehler.getOpCount());
 			weightMatrix=((GraphListeImpl)graph).toArray();
 			graph=new GraphMatrixImpl(weightMatrix,size);
 			Zaehler.reset();
 			graph.getPaths(graph.getIndexOf((int)(Math.random()*size)));
-			System.out.println("Matrix  n="+size+" Aufwand:"+Zaehler.getOpCount());
+			System.out.println("Matrix Aufwand:"+Zaehler.getOpCount()+"\n");
 		}
 		
 	}
