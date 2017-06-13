@@ -1,59 +1,112 @@
-import java.security.ProtectionDomain;
+import java.math.BigInteger;
+
+import org.apache.commons.math3.primes.Primes;
 
 public class RSA {
-
-	public static final int[] primzahlenArray= {101, 103, 107, 109, 113,
-							127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
-							179, 181, 191, 193, 197, 199,211, 223, 227, 229,
-							233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
-							283, 293,307, 311, 313, 317, 331, 337, 347, 349, 
-							353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-							419, 421, 431, 433, 439, 443, 449, 457, 461, 463,
-							467, 479, 487, 491, 499};
 	
-	
-	private int e;
 	private int d;
+	private int e;
+	private int hauptmodul;
+	private int nebenmodul;
 	
-	public RSA(){
-		int p=primzahlenArray[(int)(Math.random()*primzahlenArray.length)];
-		int q=primzahlenArray[(int)(Math.random()*primzahlenArray.length)];
-		while(p==q){
-			q=primzahlenArray[(int)(Math.random()*primzahlenArray.length)];
+	public long[] chiffre(String msg) {
+		long[] msgArray = new long[msg.length()];
+		for (int i = 0; i < msg.length(); i++) {
+			msgArray[i] = BigInteger.valueOf(msg.charAt(i)).pow(e).mod(BigInteger.valueOf(hauptmodul)).longValue();
 		}
-		int N=p*q;
-		int phiN=(p-1)*(q-1);
-		e=(int)(Math.random()*phiN/2);
-		while(ggT(e,phiN)!=1){
-			e++;
-		}
-		
-		d=(int)(Math.random()*N/2);
-		int product;
-		do{
-			d++;
-			product=e*d;
-		}while(product%N!=1);
-		
-		System.out.println("e="+e+" d="+d);
-	}
-	public static void main(String[] args) {
-		RSA rsa=new RSA();
+		return msgArray;
 	}
 	
-	public int ggT(int zahl1,int zahl2){
-
+	public String dechiffre(long[] msg) {
+		char[] msgArray = new char[msg.length];
+		for (int i = 0; i < msg.length; i++) {
+			msgArray[i] = (char) BigInteger.valueOf(msg[i]).pow(d).mod(BigInteger.valueOf(hauptmodul)).longValue();
+		}
+		return String.copyValueOf(msgArray);
+	}
+	
+	public void createKeys() {
+		int p = getPrime();
+		int q;
+		while ((q = getPrime()) == p);
+		hauptmodul = p * q;
+		nebenmodul = (p - 1) * (q - 1);
+		do {
+			e=(int)(Math.random()*nebenmodul/2);
+			while(getKgt(e,nebenmodul)!=1){
+				e++;
+			}
+		} while ((d = extendEuclid(e, nebenmodul)) < 1);
+		System.out.println("e: " + e + " d: " + d + " N: " + hauptmodul);
+	}
+	
+	public int getPublicKey() {
+		return e;
+	}
+	
+	public int getHauptmodul() {
+		return hauptmodul;
+	}
+	
+	public void setPublicKey(int e) {
+		this.e = e;
+	}
+	
+	public void setHauptmodul(int hauptmodul) {
+		this.hauptmodul = hauptmodul;
+	}
+	
+	/*
+	 * @return Primzahl zwischen 100 und 500
+	 */
+	private int getPrime() {
+		return Primes.nextPrime((int) (Math.random() * 400 + 102));
+	}
+	
+	private int getKgt(int a, int b) {
+		//while (euclid(a, b) != 1) b++;
+		//return b;
 		int tmp;
 		
 		do{
-			if (zahl2>zahl1){
-				tmp=zahl2;
-				zahl2=zahl1;
-				zahl1=tmp;
+			if (b>a){
+				tmp=b;
+				b=a;
+				a=tmp;
 			}
-			zahl1=zahl1%zahl2;
+			a=a%b;
 
-		}while(zahl1!=0);
-		return zahl2;
+		}while(a!=0);
+		return b;
 	}
+	
+	private long powMod (long a, int b, int mod)
+	{
+		long result = 1;
+		for (int i = 1; i <= b; i++) {
+		   result *= a;
+		   result %= mod;
+		}
+		return result;
+	}
+	
+	private int extendEuclid(int a, int b)
+    {
+        int x = 0, y = 1, lastx = 1, lasty = 0, temp;
+        while (b != 0)
+        {
+            int q = a / b;
+            int r = a % b;
+            a = b;
+            b = r;
+            temp = x;
+            x = lastx - q * x;
+            lastx = temp;
+            temp = y;
+            y = lasty - q * y;
+            lasty = temp;            
+        }
+        return lastx;
+    }
+
 }

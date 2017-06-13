@@ -24,7 +24,7 @@ public class BlockChiffrier {
 		return intKryptArray;
 	}
 	
-	public char[] entschluesseln(int[] intKryptArray){
+	public String entschluesseln(int[] intKryptArray){
 		int[] intClearArray=new int[intKryptArray.length-8];
 		char[] intCharArray=new char[intClearArray.length];
 		for(int i=0;i<intClearArray.length;i+=2){
@@ -35,22 +35,18 @@ public class BlockChiffrier {
 			intCharArray[i]=(char)intClearArray[i];
 		}
 		
-		return intCharArray;
+		return String.valueOf(intCharArray);
 	}
 	
 	public static void main(String[] args) {
 		BlockChiffrier bc=new BlockChiffrier("Hallo Welt");
 		int[] verschl=bc.verschluesseln();
-		char[] entschl=bc.entschluesseln(verschl);
+		String entschl=bc.entschluesseln(verschl);
 		for(int i=0;i<verschl.length;i++){
 			System.out.println(verschl[i]);
 		}
 	
-		for(int i=0;i<entschl.length;i++){
-			System.out.print(entschl[i]);
-		}
-		
-		
+		System.out.print(entschl);
 	}
 	
 }
