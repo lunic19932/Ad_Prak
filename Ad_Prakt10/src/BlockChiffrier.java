@@ -6,8 +6,11 @@ public class BlockChiffrier {
 		this.string=string;
 	}
 	
+	public void setString(String string) {
+		this.string = string;
+	}
+	
 	public int[] verschluesseln(){
-		
 		char[] charArray=string.toCharArray();
 		int[] intClearArray=new int[charArray.length];
 		for(int i=0;i<charArray.length;i++){
@@ -34,7 +37,6 @@ public class BlockChiffrier {
 		for(int i=0;i<intClearArray.length;i++){
 			intCharArray[i]=(char)intClearArray[i];
 		}
-		
 		return String.valueOf(intCharArray);
 	}
 	
@@ -45,7 +47,6 @@ public class BlockChiffrier {
 		for(int i=0;i<verschl.length;i++){
 			System.out.println(verschl[i]);
 		}
-	
 		System.out.print(entschl);
 	}
 	
